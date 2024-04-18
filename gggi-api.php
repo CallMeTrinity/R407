@@ -35,34 +35,45 @@ foreach ($parameters as $param) {
     handleArrayRequest($param);
 }
 
-if (isset($_GET['exclude'], $_GET['code'])) {
-    $args = $_GET;
-    for ($i = 0, $iMax = count($gggi); $i < $iMax; $i++) {
-        if ($gggi[$i]['code'] !== $args['code']) {
-            $json['data'][] = $gggi[$i];
-            $json['nb']++;
-        }
+if (isset($_GET['exclude'])) {
+    $params = [];
+    if (isset($_GET['code'])) {
+        $params['code'] = 'code';
     }
+    if (isset($_GET['region'])) {
+        $params['region'] = 'region';
+    }
+    if (isset($_GET['subregion'])) {
+        $params['subregion'] = 'subregion';
+    }
+
+    $filteredData = filterExclusions($params, $gggi);
+    $json['data'] = array_merge($json['data'], $filteredData);
+    $json['nb'] += count($filteredData);
 }
 
-if (isset($_GET['exclude'], $_GET['region']) && is_array($_GET['region'])) {
-    $regions = $_GET['region'];
+
+function filterExclusions($params, $gggi) {
     $excludeCodes = [];
-    foreach ($regions as $region) {
-        $code = getCode($region, 'region');
-        foreach ($code as $item){
-            $excludeCodes[] = $item;
+    foreach ($params as $param => $type) {
+        if (isset($_GET[$param])) {
+            $items = is_array($_GET[$param]) ? $_GET[$param] : [$_GET[$param]];
+            foreach ($items as $item) {
+                $codes = getCode($item, $type);
+                $excludeCodes = array_merge($excludeCodes, $codes);
+            }
         }
     }
+    $excludeCodes = array_unique($excludeCodes);
 
+    $filteredData = [];
     foreach ($gggi as $item) {
         if (!in_array($item['code'], $excludeCodes, true)) {
-            $json['data'][] = $item;
-            $json['nb']++;
+            $filteredData[] = $item;
         }
     }
+    return $filteredData;
 }
-
 
 function handleArrayRequest(string $query): void
 {
