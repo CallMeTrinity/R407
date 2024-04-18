@@ -46,13 +46,17 @@ if (isset($_GET['exclude'], $_GET['code'])) {
 }
 
 if (isset($_GET['exclude'], $_GET['region']) && is_array($_GET['region'])) {
-    $regionCode = [];
-    foreach ($_GET['region'] as $region) {
-        $regionCode = (getCode($region, 'region'));
+    $regions = $_GET['region'];
+    $excludeCodes = [];
+    foreach ($regions as $region) {
+        $code = getCode($region, 'region');
+        foreach ($code as $item){
+            $excludeCodes[] = $item;
+        }
     }
-    var_dump($regionCode);
+
     foreach ($gggi as $item) {
-        if (!in_array($item['code'], $regionCode, true)) {
+        if (!in_array($item['code'], $excludeCodes, true)) {
             $json['data'][] = $item;
             $json['nb']++;
         }
