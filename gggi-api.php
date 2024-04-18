@@ -35,6 +35,85 @@ foreach ($parameters as $param) {
     handleArrayRequest($param);
 }
 
+//if (isset($_GET['indicator'])) {
+//    $element = $_GET['indicator'];
+//    for ($i = 0, $iMax = sizeof($gggi); $i < $iMax; $i++) {
+//        if ($gggi[$i]['indicator'] === $element) {
+//            $json['data'][] = $gggi[$i];
+//            $json['nb']++;
+//        }
+//    }
+//}
+//if (isset($_GET['year'])) {
+//    $element = $_GET['year'];
+//    for ($i = 0, $iMax = sizeof($gggi); $i < $iMax; $i++) {
+//        if ($gggi[$i]['year'] === $element) {
+//            $json['data'][] = $gggi[$i];
+//            $json['nb']++;
+//        }
+//    }
+//}
+//if (isset($_GET['indicator']) && is_array($_GET['indicator'])) {
+//    $elements = $_GET['indicator'];
+//    foreach ($elements as $element) {
+//        for ($i = 0, $iMax = sizeof($gggi); $i < $iMax; $i++) {
+//            if ($gggi[$i]['indicator'] === $element) {
+//                $json['data'][] = $gggi[$i];
+//                $json['nb']++;
+//            }
+//        }
+//    }
+//
+//}
+//if (isset($_GET['year']) && is_array($_GET['year'])) {
+//    $elements = $_GET['year'];
+//    foreach ($elements as $element) {
+//        for ($i = 0, $iMax = sizeof($gggi); $i < $iMax; $i++) {
+//            if ($gggi[$i]['year'] === $element) {
+//                $json['data'][] = $gggi[$i];
+//                $json['nb']++;
+//            }
+//        }
+//    }
+//}
+
+//if (isset($_GET['year'], $_GET['indicator'])) {
+//    $indicator = $_GET['indicator'];
+//    $year = $_GET['year'];
+//
+//    for ($i = 0, $iMax = sizeof($gggi); $i < $iMax; $i++) {
+//        if ($gggi[$i]['year'] === $year && $gggi[$i]['indicator'] === $indicator) {
+//            $json['data'][] = $gggi[$i];
+//            $json['nb']++;
+//        }
+//    }
+//}
+if (isset($_GET['year'], $_GET['indicator']) && is_array($_GET['year'])) {
+    $indicator = $_GET['indicator'];
+    $years = $_GET['year'];
+
+    for ($i = 0, $iMax = sizeof($gggi); $i < $iMax; $i++) {
+        foreach ($years as $year) {
+            if ($gggi[$i]['year'] === $year && $gggi[$i]['indicator'] === $indicator) {
+                $json['data'][] = $gggi[$i];
+                $json['nb']++;
+            }
+        }
+    }
+}
+
+if (isset($_GET['year'], $_GET['code'])) {
+    $code = $_GET['code'];
+    $year = $_GET['year'];
+
+    for ($i = 0, $iMax = sizeof($gggi); $i < $iMax; $i++) {
+        if ($gggi[$i]['year'] === $year && $gggi[$i]['code'] === $code) {
+            $json['data'][] = $gggi[$i];
+            $json['nb']++;
+        }
+    }
+}
+
 if (isset($_GET['exclude'])) {
     $params = [];
     if (isset($_GET['code'])) {
@@ -53,18 +132,18 @@ if (isset($_GET['exclude'])) {
 }
 
 
-function filterExclusions($params, $gggi) {
+function filterExclusions($params, $gggi)
+{
     $excludeCodes = [];
     foreach ($params as $param => $type) {
-        if (isset($_GET[$param])) {
-            $items = is_array($_GET[$param]) ? $_GET[$param] : [$_GET[$param]];
-            foreach ($items as $item) {
-                $codes = getCode($item, $type);
-                $excludeCodes = array_merge($excludeCodes, $codes);
+        $items = is_array($_GET[$param]) ? $_GET[$param] : [$_GET[$param]];
+        foreach ($items as $item) {
+            $code = getCode($item, $type);
+            foreach ($code as $c) {
+                $excludeCodes[] = $c;
             }
         }
     }
-    $excludeCodes = array_unique($excludeCodes);
 
     $filteredData = [];
     foreach ($gggi as $item) {
