@@ -64,7 +64,7 @@ class API extends BDHandler
         $stmt->execute();
         $result = $stmt->fetch();
         $this->disconnect();
-        if ($result){
+        if ($result) {
             return [
                 'id' => $result['id'],
                 'name' => $result['name'],
@@ -89,9 +89,61 @@ class API extends BDHandler
         return $data;
     }
 
-    public function selectMovie(?string $name, ?int $year, ?string $director) : ?array
+    private function getDataFromId(int $id, string $table): array
     {
+        $this->connect();
+        $sql = "SELECT * FROM $table WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
 
+    public function selectAllMovies(): array
+    {
+        $this->connect();
+        $results = $this->select('SELECT * FROM Movie');
+        $data = [];
+        foreach ($results as $movie) {
+            $directorData = $this->getDataFromId($movie['director'], 'Person');
+            $director = $directorData['surname'] .' '. $directorData['name'];
+            $data[] = [
+                'id' => $movie['id'],
+                'name' => $movie['name'],
+                'year' => $movie['year'],
+                'director' => $director,
+            ];
+        }
+        $this->disconnect();
+        return $data;
+    }
+
+    public function selectMovie(?string $name, ?int $year, ?string $director): ?array
+    {
+        $this->connect();
+        $sql = 'SELECT * FROM Movie WHERE name = :name OR year = :year OR director = :director';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':year', $year);
+        $stmt->bindParam(':director', $director);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        $this->disconnect();
+        if ($results) {
+            $data = [];
+            foreach ($results as $result) {
+                $directorData = $this->getDataFromId($result['director'], 'Person');
+                $director = $directorData['surname'] . ' ' . $directorData['name'];
+                $data[] = [
+                    'id' => $result['id'],
+                    'name' => $result['name'],
+                    'year' => $result['year'],
+                    'director' => $director,
+                ];
+            }
+            return $data;
+        }
+        return null;
     }
 
     // TODO
@@ -155,19 +207,24 @@ if (isset($_GET['crud'])) {
         switch ($request) {
             case 'person':
                 if (isset($_GET['name']) || isset($_GET['surname'])) {
-                    $res['data'] = $api->selectPerson($_GET['name']??'', $_GET['surname']??'');
+                    $res['data'] = $api->selectPerson($_GET['name'] ?? '', $_GET['surname'] ?? '');
                 } else {
                     $res['data'] = $api->selectAllPerson();
                 }
                 break;
             case 'movie':
-                if (isset($_GET['name'], $_GET['year'], $_GET['director'])) {
-                    $res['data'] = $api->selectMovie($_GET['name'], $_GET['year'], $_GET['director']);
+                if (isset($_GET['name']) ||  isset($_GET['year']) || isset($_GET['director'])) {
+                    $res['data'] = $api->selectMovie($_GET['name'] ?? '', $_GET['year'] ?? null, $_GET['director'] ?? '');
+                } else {
+                    $res['data'] = $api->selectAllMovies();
                 }
                 break;
             case 'cast':
                 if (isset($_GET['person'], $_GET['movie'])) {
                     $res['data'] = $api->selectCast($_GET['person'], $_GET['movie']);
+                }
+                else {
+                    $res['data'] = $api->selectAllMovies();
                 }
                 break;
             default:
