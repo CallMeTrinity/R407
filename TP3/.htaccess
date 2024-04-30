@@ -1,0 +1,9 @@
+RewriteEngine on
+
+# If the request is a file, folder or symlink that exists, serve it up
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# redirect all api calls to /api/index.php, QSA to keep the query string parameter (GET)
+RewriteRule ^api/((?!index\.php$).+)$ api/index.php [L,NC,QSA]
