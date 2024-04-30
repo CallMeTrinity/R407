@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37f7c741-ce92-4c12-b376-5d0d64a5027a" name="Changes" comment="(TP2) CREATE AND SELECT PERSON">
+    <list default="true" id="37f7c741-ce92-4c12-b376-5d0d64a5027a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP3/api/bd.php" beforeDir="false" afterPath="$PROJECT_DIR$/TP3/api/bd.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP3/api/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/TP3/api/index.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +59,7 @@
       <updated>1713510528230</updated>
       <workItem from="1713510529329" duration="3859000" />
       <workItem from="1714399626661" duration="6829000" />
-      <workItem from="1714487237799" duration="503000" />
+      <workItem from="1714487237799" duration="5280000" />
     </task>
     <task id="LOCAL-00001" summary="refactoring">
       <created>1713510590221</created>
@@ -94,16 +96,26 @@
       <option name="project" value="LOCAL" />
       <updated>1714406452088</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="TP3 init">
+      <created>1714487792963</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1714487792963</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="refactoring" />
     <MESSAGE value="TP2 init" />
     <MESSAGE value="(TP2) CREATE AND SELECT PERSON" />
-    <option name="LAST_COMMIT_MESSAGE" value="(TP2) CREATE AND SELECT PERSON" />
+    <MESSAGE value="TP3 init" />
+    <option name="LAST_COMMIT_MESSAGE" value="TP3 init" />
   </component>
 </project>

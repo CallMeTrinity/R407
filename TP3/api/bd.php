@@ -21,7 +21,7 @@
 
         public function disconnect() {
             if ($this->isConnected()) {
-                $this->conn->query('KILL CONNECTION_ID()');
+
                 $this->conn = NULL;
             }
         }
