@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="37f7c741-ce92-4c12-b376-5d0d64a5027a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b1a3b9fe-8804-4d14-a636-8dea8594540c.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TP3/api/bd.php" beforeDir="false" afterPath="$PROJECT_DIR$/TP3/api/bd.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP3/api/bd.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/TP3/api/bd.sqlite" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TP3/api/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/TP3/api/index.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,7 +60,8 @@
       <updated>1713510528230</updated>
       <workItem from="1713510529329" duration="3859000" />
       <workItem from="1714399626661" duration="6829000" />
-      <workItem from="1714487237799" duration="5280000" />
+      <workItem from="1714487237799" duration="5448000" />
+      <workItem from="1714637698889" duration="4874000" />
     </task>
     <task id="LOCAL-00001" summary="refactoring">
       <created>1713510590221</created>
@@ -103,7 +105,14 @@
       <option name="project" value="LOCAL" />
       <updated>1714487792963</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="TP3 LIST AND ADD">
+      <created>1714492682236</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1714492682236</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -116,6 +125,7 @@
     <MESSAGE value="TP2 init" />
     <MESSAGE value="(TP2) CREATE AND SELECT PERSON" />
     <MESSAGE value="TP3 init" />
-    <option name="LAST_COMMIT_MESSAGE" value="TP3 init" />
+    <MESSAGE value="TP3 LIST AND ADD" />
+    <option name="LAST_COMMIT_MESSAGE" value="TP3 LIST AND ADD" />
   </component>
 </project>

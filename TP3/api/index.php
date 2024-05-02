@@ -1,4 +1,7 @@
 <?php
+
+use JetBrains\PhpStorm\NoReturn;
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -62,40 +65,111 @@ class API extends BDHandler
         $req = 'INSERT INTO Preparation (ingredient, recipe, quantity) VALUES (?,?,?)';
         $this->connect();
         $stmt = $this->conn->prepare($req);
-        $success = $stmt->execute([$ingredient,$recipe,$quantity]);
+        $success = $stmt->execute([$ingredient, $recipe, $quantity]);
         if ($success) {
             return "Preparation created with $quantity number of ingredients (ID=$ingredient) added to the recipe (ID=$recipe)";
         }
-        return "An error occured while adding an element to the database";
+        return "An error occurred while adding an element to the database";
     }
 
-// TODO
-//
-//        public function insertExample() {
-//            $req  = "INSERT INTO Table (colA, colB) VALUES ('a', 200)";
-//            $this->instruct($req);
-//        }
-//
-//        public function selectExample() {
-//            $req = "SELECT * FROM Table";
-//            return $this->select($req);
-//        }
-//
-//        public function updateExample() {
-//            $req  = "UPDATE Table SET colA = 'titi', colB = 300";
-//            $this->instruct($req);
-//        }
-//
-//        public function deleteExample() {
-//            $req = "DELETE FROM Table WHERE id = 4";
-//            $this->instruct($req);
-//        }    }
+    public function updateRecipe(string $name, string $newName): string
+    {
+        if (!$this->checkExistence('name', $name, 'Recipe')) {
+            return sprintf('No elements with the name %s found in the database', $name);
+        }
+        $req = "UPDATE Recipe SET name = ? WHERE name = ?";
+        $this->connect();
+        $stmt = $this->conn->prepare($req);
+        $success = $stmt->execute([$newName, $name]);
+        if ($success) {
+            return "Recipe name updated from $name to $newName";
+        }
+        return "An error occurred while updating an element to the database";
+    }
+
+    private function checkExistence(string $param, string $test, string $table): bool
+    {
+        $req = "SELECT * FROM $table WHERE $param = ?";
+        $this->connect();
+        $stmt = $this->conn->prepare($req);
+        $stmt->execute([$test]);
+        $result = $stmt->fetchAll();
+        if (!empty($result)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateIngredient(string $name, string $newName): string
+    {
+        if (!$this->checkExistence('name', $name, 'Ingredient')) {
+            return sprintf('No elements with the name %s found in the database', $name);
+        }
+        $req = "UPDATE Ingredient SET name = ? WHERE name = ?";
+        $this->connect();
+        $stmt = $this->conn->prepare($req);
+        $success = $stmt->execute([$newName, $name]);
+        if ($success) {
+            return sprintf('Ingredient name updated from %s to %s', $name, $newName);
+        }
+        return "An error occurred while updating an element to the database";
+    }
+
+    public function updatePreparation(int $recipe, int $ingredient, int $quantity): string
+    {
+        if (!$this->checkExistence('recipe', $recipe, 'Preparation')) {
+            return sprintf('No elements with the id %d found in the database', $recipe);
+        }
+        $req = "UPDATE Preparation SET quantity = ? WHERE recipe = ? AND ingredient = ?";
+        $this->connect();
+        $stmt = $this->conn->prepare($req);
+        $success = $stmt->execute([$quantity, $recipe, $ingredient]);
+        if ($success) {
+            return sprintf('Preparation quantity updated to %d', $quantity);
+        }
+        return "An error occurred while updating an element to the database";
+    }
+
+    public function deleteRecipe(string $name): string
+    {
+        if (!$this->checkExistence('name', $name, 'Recipe')) {
+            return sprintf('No elements with the name %s found in the database', $name);
+        }
+
+        $req = "DELETE FROM Recipe WHERE name = ?";
+        $this->connect();
+        $stmt = $this->conn->prepare($req);
+        $success = $stmt->execute([$name]);
+        if ($success) {
+            return sprintf('Deleted %s', $name);
+        }
+        return "An error occurred while updating an element to the database";
+    }
+
+    public function deletePreparation(int $ingredient): string
+    {
+        if (!$this->checkExistence('ingredient', $ingredient, 'Preparation')) {
+            return sprintf('No elements with the id %d found in the database', $ingredient);
+        }
+
+        $req = "DELETE FROM Preparation WHERE ingredient = ?";
+        $this->connect();
+        $stmt = $this->conn->prepare($req);
+        $success = $stmt->execute([$ingredient]);
+        if ($success) {
+            return sprintf('Deleted %d', $ingredient);
+        }
+        return "An error occurred while updating an element to the database";
+    }
 }
 
-function stop($status, $res)
+/**
+ * @throws JsonException
+ */
+#[NoReturn] function stop($status, $res)
 {
     $res['status'] = $status;
-    echo json_encode($res);
+    echo json_encode($res, JSON_THROW_ON_ERROR);
     exit();
 }
 
@@ -129,6 +203,7 @@ $name = '';
 $recipe = null;
 $ingredient = null;
 $quantity = null;
+$newName = '';
 
 if (isset($_GET['name'])) {
     $name = ucfirst(strtolower($_GET['name']));
@@ -141,6 +216,10 @@ if (isset($_GET['ingredient']) && is_numeric($_GET['ingredient']) && ($_GET['ing
 }
 if (isset($_GET['quantity']) && is_numeric($_GET['quantity']) && $_GET['quantity'] > 0) {
     $quantity = $_GET['quantity'];
+}
+if (isset($_GET['name'], $_GET['newName'])) {
+    $name = $_GET['name'];
+    $newName = $_GET['newName'];
 }
 
 switch ($resource) {
@@ -156,6 +235,10 @@ switch ($resource) {
                 $res['msg'] = $api->addIngredient($name);
                 break;
             case 'update':
+                if (!$newName) {
+                    stop('failed', $res);
+                }
+                $res['msg'] = $api->updateIngredient($name, $newName);
                 break;
         }
         break;
@@ -179,7 +262,16 @@ switch ($resource) {
                 $res['msg'] = $api->addPreparation($ingredient, $recipe, $quantity);
                 break;
             case 'update':
+                if (!$quantity) {
+                    stop('failed', $res);
+                }
+                $res['msg'] = $api->updatePreparation($recipe, $ingredient, $quantity);
                 break;
+            case 'delete':
+                if (!$ingredient) {
+                    stop('failed', $res);
+                }
+                $res['msg'] = $api->deletePreparation($ingredient);
         }
         break;
     case 'recipe':
@@ -198,7 +290,16 @@ switch ($resource) {
                 $res['msg'] = $api->addRecipe($name);
                 break;
             case 'update':
+                if (!$newName) {
+                    stop('failed', $res);
+                }
+                $res['msg'] = $api->updateRecipe($name, $newName);
                 break;
+            case 'delete':
+                if (!$name) {
+                    stop('failed', $res);
+                }
+                $res['msg'] = $api->deleteRecipe($name);
         }
         break;
 }
