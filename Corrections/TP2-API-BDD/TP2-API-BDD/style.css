@@ -1,0 +1,71 @@
+* { font-family: sans-serif; }
+
+details {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 0.5em 0.5em 0;
+}
+
+summary {
+    font-weight: bold;
+    margin: -0.5em -0.5em 0;
+    padding: 0.5em;
+}
+
+details[open] {
+    padding: 0.5em;
+}
+
+summary:hover {
+    background-color: #00bcd4;
+    color: white;
+}
+
+.link {
+    background-color: #ffc107;
+    font-family: monospace;
+    padding: 1px 5px;
+    text-decoration: none;
+    border-radius: 3px;
+    font-weight: 300;
+    color: black;
+    cursor: pointer;
+}
+
+input[name="url"] {
+    width: 24ch;
+}
+
+input[name="uri"] {
+    width: calc(100% - 39ch);
+}
+
+.json, .inlinejson {
+    background-color: #282828;
+    color: white;
+    font-family: monospace;
+    padding: 1px 5px;
+}
+
+.json {
+    padding: 10px 50px;
+    margin: 10px 10px;
+    border-radius: 10px;
+    box-shadow: inset 0px 0px 20px 1px black;
+    overflow: scroll;
+}
+
+.exercise {
+    background-color: #a6ce94;
+    padding: 5px 20px;
+    border-radius: 5px;
+}
+
+.warning {
+    background-color: #ffc107;
+}
+
+.warning * .link {
+    background-color: #1e88e5;
+    color: white;
+}
